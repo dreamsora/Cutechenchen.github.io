@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Ajax工具函数封装标签（空格分隔）： Ajax编程  原生Ajax写法回顾 原生使用Ajax主要分为五步,需要手写较多内容,如果每次我们使用Ajax都需要手写一遍,较为浪费时间,所以我们将公共代码抽取,封装为工具函数.   五步使用法:  ​    1. 建立XMLHTTPRequest对象    ​    2. 注册回调函数 ​        * 当服务器回应我们了,我们想要执行什么逻辑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ajax">
+<meta property="og:url" content="http://yoursite.com/2017/08/12/ajax/index.html">
+<meta property="og:site_name" content="Little Stars">
+<meta property="og:description" content="Ajax工具函数封装标签（空格分隔）： Ajax编程  原生Ajax写法回顾 原生使用Ajax主要分为五步,需要手写较多内容,如果每次我们使用Ajax都需要手写一遍,较为浪费时间,所以我们将公共代码抽取,封装为工具函数.   五步使用法:  ​    1. 建立XMLHTTPRequest对象    ​    2. 注册回调函数 ​        * 当服务器回应我们了,我们想要执行什么逻辑">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2017/08/12/ajax/images/tuzi2.gif">
+<meta property="og:image" content="http://static.zybuluo.com/antumuFish/m096g5h6kce1nkj7fm0ppeml/ajaxtool_step01.gif">
+<meta property="og:image" content="http://static.zybuluo.com/antumuFish/o1cbnngov0wfuehptj1sb44k/ajaxtool_step02.gif">
+<meta property="og:image" content="http://static.zybuluo.com/antumuFish/9cryprc0oyx8p37mw02xu20x/ajaxtool_step03.gif">
+<meta property="og:image" content="http://static.zybuluo.com/antumuFish/98yu00utqukr0z58qe9v9k1s/ajaxtool_step04.gif">
+<meta property="og:image" content="http://static.zybuluo.com/antumuFish/rh87e9xr85ezjvsi1y8s83p7/ajaxtool_step06.gif">
+<meta property="og:updated_time" content="2017-08-14T00:34:31.804Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ajax">
+<meta name="twitter:description" content="Ajax工具函数封装标签（空格分隔）： Ajax编程  原生Ajax写法回顾 原生使用Ajax主要分为五步,需要手写较多内容,如果每次我们使用Ajax都需要手写一遍,较为浪费时间,所以我们将公共代码抽取,封装为工具函数.   五步使用法:  ​    1. 建立XMLHTTPRequest对象    ​    2. 注册回调函数 ​        * 当服务器回应我们了,我们想要执行什么逻辑">
+<meta name="twitter:image" content="http://yoursite.com/2017/08/12/ajax/images/tuzi2.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/12/ajax/"/>
+
+
+
+
+
+  <title>ajax | Little Stars</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little Stars</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">小新星</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-photo">
+          <a href="/photo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-photo"></i> <br />
+            
+            相册
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/12/ajax/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CuteChenChen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tuzi.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little Stars">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ajax</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-12T21:47:58+08:00">
+                2017-08-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Ajax工具函数封装"><a href="#Ajax工具函数封装" class="headerlink" title="Ajax工具函数封装"></a>Ajax工具函数封装</h1><p>标签（空格分隔）： Ajax编程</p>
+<p><img src="./images/tuzi2.gif" alt="试一试"></p>
+<h2 id="原生Ajax写法回顾"><a href="#原生Ajax写法回顾" class="headerlink" title="原生Ajax写法回顾"></a>原生Ajax写法回顾</h2><blockquote>
+<p>原生使用<code>Ajax</code>主要分为五步,需要手写较多内容,如果每次我们使用<code>Ajax</code>都需要手写一遍,较为浪费时间,所以我们将公共代码抽取,封装为工具函数.</p>
+</blockquote>
+<ul>
+<li><strong>五步使用法:</strong></li>
+</ul>
+<p>​    1. 建立XMLHTTPRequest对象   </p>
+<p>​    2. 注册回调函数</p>
+<p>​        * 当服务器<code>回应</code>我们了,我们想要执行什么逻辑  </p>
+<p>​    3. 使用open方法设置和服务器端交互的基本信息</p>
+<p>​        * 设置提交的<code>网址</code>,<code>数据</code>,<code>post</code>提交的一些额外内容</p>
+<p>​    4. 设置发送的数据，开始和服务器端交互</p>
+<p>​        * 发送数据</p>
+<p>​    5. 更新界面</p>
+<p>​        * 在注册的回调函数中,获取返回的数据,更新界面</p>
+<p><br></p>
+<ul>
+<li><strong>示例代码:GET</strong></li>
+</ul>
+<p>get的数据,直接在请求的<code>url</code>中添加即可</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</div><div class="line"></div><div class="line">​    <span class="comment">// 创建XMLHttpRequest 对象</span></div><div class="line"></div><div class="line">​    <span class="keyword">var</span> xml = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line"></div><div class="line">​    <span class="comment">// 设置跟服务端交互的信息</span></div><div class="line"></div><div class="line">​    xml.open(<span class="string">'get'</span>,<span class="string">'01.ajax.php?name=fox'</span>);</div><div class="line"></div><div class="line">​    xml.send(<span class="literal">null</span>); <span class="comment">// get请求这里写null即可</span></div><div class="line"></div><div class="line">​    <span class="comment">// 接收服务器反馈</span></div><div class="line"></div><div class="line">​    xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line"></div><div class="line">​        <span class="comment">// 这步为判断服务器是否正确响应</span></div><div class="line"></div><div class="line">​        <span class="keyword">if</span> (xhr.readyState == <span class="number">4</span> &amp;&amp; xhr.status == <span class="number">200</span>) &#123;</div><div class="line"></div><div class="line">​            <span class="comment">// 打印响应内容</span></div><div class="line"></div><div class="line">​            alert(xml.responseText);</div><div class="line"></div><div class="line">​        &#125; </div><div class="line"></div><div class="line">​    &#125;;</div><div class="line"></div><div class="line">&lt;<span class="regexp">/script&gt;</span></div></pre></td></tr></table></figure>
+<p><br></p>
+<ul>
+<li><strong>示例代码:POST</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;script type=&quot;text/javascript&quot;&gt;</div><div class="line"></div><div class="line">​    // 异步对象</div><div class="line"></div><div class="line">​    var xhr = new XMLHttpRequest();</div><div class="line"></div><div class="line">​    </div><div class="line"></div><div class="line">​    // 设置属性</div><div class="line"></div><div class="line">​    xhr.open(&apos;post&apos;, &apos;02.post.php&apos; );</div><div class="line"></div><div class="line">​    </div><div class="line"></div><div class="line">​    // 如果想要使用post提交数据,必须添加</div><div class="line"></div><div class="line">​    xhr.setRequestHeader(&quot;Content-type&quot;,&quot;application/x-www-form-urlencoded&quot;);</div><div class="line"></div><div class="line">​    </div><div class="line"></div><div class="line">​    // 将数据通过send方法传递</div><div class="line"></div><div class="line">​    xhr.send(&apos;name=fox&amp;age=18&apos;);</div><div class="line"></div><div class="line">​    </div><div class="line"></div><div class="line">​    // 发送并接受返回值</div><div class="line"></div><div class="line">​    xhr.onreadystatechange = function () &#123;</div><div class="line"></div><div class="line">​    // 这步为判断服务器是否正确响应</div><div class="line"></div><div class="line">​    if (xhr.readyState == 4 &amp;&amp; xhr.status == 200) &#123;</div><div class="line"></div><div class="line">​           alert(xhr.responseText);</div><div class="line"></div><div class="line">​         &#125; </div><div class="line"></div><div class="line">​    &#125;;</div><div class="line"></div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
+<h2 id="抽取公共部分"><a href="#抽取公共部分" class="headerlink" title="抽取公共部分"></a>抽取公共部分</h2><h3 id="重复步骤分析"><a href="#重复步骤分析" class="headerlink" title="重复步骤分析:"></a><strong>重复步骤分析:</strong></h3><p>​    * 创建异步对象</p>
+<p>​    * 异步对象<code>open</code>,<code>send</code>方法调用</p>
+<p>​    * <code>post</code>方法添加<code>HTTP</code>协议头文件</p>
+<p>​    * 判断<code>Ajax</code>响应状态</p>
+<p><br></p>
+<h3 id="封装方法1-提取需要改变部分"><a href="#封装方法1-提取需要改变部分" class="headerlink" title="封装方法1:提取需要改变部分"></a><strong>封装方法1:提取需要改变部分</strong></h3><blockquote>
+<p>哪些部分是需要<strong>使用者</strong>自定义的:</p>
+</blockquote>
+<p>​    1. <strong>提交方法</strong></p>
+<p>​    2. <strong>url地址</strong></p>
+<p>​    3. <strong>数据</strong></p>
+<p>​    4. <strong>Ajax请求成功调用方法</strong></p>
+<p>上述内容,应该是调用时,由用户传入的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">function ajax(argument) &#123;</div><div class="line"></div><div class="line">​    // 创建对象</div><div class="line"></div><div class="line">​    var xmlRequest ;</div><div class="line"></div><div class="line">​    if (XMLHttpRequest) &#123;</div><div class="line"></div><div class="line">​        xmlRequest = new XMLHttpRequest();</div><div class="line"></div><div class="line">​    &#125;else&#123;</div><div class="line"></div><div class="line">​        xmlRequest = new ActiveXObject(&quot;Microsoft.XMLHTTP&quot;);</div><div class="line"></div><div class="line">​    &#125;</div><div class="line"></div><div class="line">​    // open方法</div><div class="line"></div><div class="line">​    xmlRequest.open(提交方法,url地址)</div><div class="line"></div><div class="line">​    // 如果是post设置HTTP协议头</div><div class="line"></div><div class="line">​    if (方法==&quot;post&quot;) &#123;</div><div class="line"></div><div class="line">​        xmlRequest.setRequestHeader(&quot;Content-type&quot;,&quot;application/x-www-form-urlencoded&quot;);</div><div class="line"></div><div class="line">​    &#125;</div><div class="line"></div><div class="line">​    // send方法</div><div class="line"></div><div class="line">​    xmlRequest.send(数据);</div><div class="line"></div><div class="line">​    // 判断状态改变,调用方法</div><div class="line"></div><div class="line">​    xmlRequest.onreadystatechange = function () &#123;</div><div class="line"></div><div class="line">​    // 这步为判断服务器是否正确响应</div><div class="line"></div><div class="line">​    if (xhr.readyState == 4 &amp;&amp; xhr.status == 200) &#123;</div><div class="line"></div><div class="line">​            自定义方法(数据);  </div><div class="line"></div><div class="line">​       &#125; </div><div class="line"></div><div class="line">​    &#125;;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><br></p>
+<h3 id="封装方法2-定义方法参数"><a href="#封装方法2-定义方法参数" class="headerlink" title="封装方法2:定义方法参数"></a><strong>封装方法2:定义方法参数</strong></h3><blockquote>
+<p>将需要用户自定义的部分,通过方法的参数传递进来</p>
+</blockquote>
+<p><img src="http://static.zybuluo.com/antumuFish/m096g5h6kce1nkj7fm0ppeml/ajaxtool_step01.gif" alt="ajaxtool_step01.gif-818.9kB"></p>
+<h3 id="封装方法3-优化参数"><a href="#封装方法3-优化参数" class="headerlink" title="封装方法3:优化参数"></a><strong>封装方法3:优化参数</strong></h3><blockquote>
+<p>参数的数量较多,如果可以之传入一个<code>对象</code>,将需要传入的参数,作为对象的属性,方法看起来会更为简洁</p>
+</blockquote>
+<ul>
+<li><strong>示例:</strong></li>
+</ul>
+<p><img src="http://static.zybuluo.com/antumuFish/o1cbnngov0wfuehptj1sb44k/ajaxtool_step02.gif" alt="ajaxtool_step02.gif-2735.4kB"></p>
+<ul>
+<li><strong>使用方法:</strong></li>
+</ul>
+<p><img src="http://static.zybuluo.com/antumuFish/9cryprc0oyx8p37mw02xu20x/ajaxtool_step03.gif" alt="ajaxtool_step03.gif-2232.4kB"></p>
+<h3 id="封装方法4-参数格式化"><a href="#封装方法4-参数格式化" class="headerlink" title="封装方法4:参数格式化"></a><strong>封装方法4:参数格式化</strong></h3><blockquote>
+<p>自定义ajax传递参数时,数据的格式为<code>name=fox&amp;age=18</code>,而我们在写js代码时,创建<code>js对象</code>更为便捷,所以接下来添加处理数据的逻辑</p>
+</blockquote>
+<ul>
+<li><strong>思路分析:</strong>约定:传入的是<code>js对象</code></li>
+</ul>
+<p>​    * 将<code>js对象</code>格式化为:<code>name=fox&amp;age=18</code></p>
+<p>​    * 判断提交方法,将格式化好的数据放置到对应的位置</p>
+<ul>
+<li><strong>格式化数据代码:</strong></li>
+</ul>
+<p><img src="http://static.zybuluo.com/antumuFish/98yu00utqukr0z58qe9v9k1s/ajaxtool_step04.gif" alt="ajaxtool_step04.gif-4233.8kB"></p>
+<ul>
+<li><strong>修改之后代码:</strong> </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">function ajax(option) &#123;</div><div class="line"></div><div class="line">​    // 创建对象</div><div class="line"></div><div class="line">​    var xmlRequest ;</div><div class="line"></div><div class="line">​    if (XMLHttpRequest) &#123;</div><div class="line"></div><div class="line">​        xmlRequest = new XMLHttpRequest();</div><div class="line"></div><div class="line">​    &#125;else&#123;</div><div class="line"></div><div class="line">​        xmlRequest = new ActiveXObject(&quot;Microsoft.XMLHTTP&quot;);</div><div class="line"></div><div class="line">​    &#125;</div><div class="line"></div><div class="line">​    // 格式化传入的数据为name=fox&amp;age=18这样的格式</div><div class="line"></div><div class="line">​    var formatStr = &quot;&quot;;</div><div class="line"></div><div class="line">​    for(var item in option.data)&#123;</div><div class="line"></div><div class="line">​        // 获取属性名,属性值,进行拼接</div><div class="line"></div><div class="line">​        formatStr+=item;// 属性名</div><div class="line"></div><div class="line">​        formatStr+=&quot;=&quot;;//等号</div><div class="line"></div><div class="line">​        formatStr+=option.data[item];//属性值</div><div class="line"></div><div class="line">​        formatStr+=&quot;&amp;&quot;;//分隔符</div><div class="line"></div><div class="line">​    &#125;</div><div class="line"></div><div class="line">​    </div><div class="line"></div><div class="line">​    // 去除最后一个&amp;</div><div class="line"></div><div class="line">​    formatStr = formatStr.slice(0,-1);</div><div class="line"></div><div class="line">​    // open方法 如果是get方法,那么url之后需要添加数据</div><div class="line"></div><div class="line">​    if(option.method == &quot;get&quot;)&#123;</div><div class="line"></div><div class="line">​        option.url = option.url+&quot;?&quot;+formatStr;</div><div class="line"></div><div class="line">​        option.data = null;</div><div class="line"></div><div class="line">​    &#125;</div><div class="line"></div><div class="line">​    // 调用open方法</div><div class="line"></div><div class="line">​    xmlRequest.open(option.method,option.url)</div><div class="line"></div><div class="line">​    // 如果是post设置HTTP协议头</div><div class="line"></div><div class="line">​    if (option.method==&quot;post&quot;) &#123;</div><div class="line"></div><div class="line">​        xmlRequest.setRequestHeader(&quot;Content-type&quot;,&quot;application/x-www-form-urlencoded&quot;);</div><div class="line"></div><div class="line">​    &#125;</div><div class="line"></div><div class="line">​    </div><div class="line"></div><div class="line">​    // send方法 这里的data已经是修改过的,如果使用的是get方法,那么data为null</div><div class="line"></div><div class="line">​        xmlRequest.send(option.data);</div><div class="line"></div><div class="line">​    // 判断状态改变,调用方法</div><div class="line"></div><div class="line">​    xmlRequest.onreadystatechange = function () &#123;</div><div class="line"></div><div class="line">​    // 这步为判断服务器是否正确响应</div><div class="line"></div><div class="line">​    if (xhr.readyState == 4 &amp;&amp; xhr.status == 200) &#123;</div><div class="line"></div><div class="line">​            option.success(这里的数据是ajax获取的);  </div><div class="line"></div><div class="line">​       &#125; </div><div class="line"></div><div class="line">​    &#125;;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="封装方法5-参数格式化"><a href="#封装方法5-参数格式化" class="headerlink" title="封装方法5:参数格式化"></a><strong>封装方法5:参数格式化</strong></h3><blockquote>
+<p>为了避免自定义的<code>Ajax</code>方法被用户自定义的方法覆盖,添加到<code>命名空间</code>下,进行最后一步优化</p>
+</blockquote>
+<ul>
+<li><strong>命名空间:</strong></li>
+</ul>
+<p>​    * 为了防止自定义的<code>Ajax</code>函数被用户覆盖,可以通过将该函数设置为一个对象的方法</p>
+<p>​    * 使用时,只需要通过<code>对象.方法</code>即可使用</p>
+<p><img src="http://static.zybuluo.com/antumuFish/rh87e9xr85ezjvsi1y8s83p7/ajaxtool_step06.gif" alt="ajaxtool_step06.gif-230.3kB"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/12/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/13/test/" rel="prev" title="ngAnimate">
+                ngAnimate <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/tuzi.gif"
+               alt="CuteChenChen" />
+          <p class="site-author-name" itemprop="name">CuteChenChen</p>
+           
+              <p class="site-description motion-element" itemprop="description">个人学习博客，学习笔记</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ajax工具函数封装"><span class="nav-number">1.</span> <span class="nav-text">Ajax工具函数封装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#原生Ajax写法回顾"><span class="nav-number">1.1.</span> <span class="nav-text">原生Ajax写法回顾</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#抽取公共部分"><span class="nav-number">1.2.</span> <span class="nav-text">抽取公共部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重复步骤分析"><span class="nav-number">1.2.1.</span> <span class="nav-text">重复步骤分析:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装方法1-提取需要改变部分"><span class="nav-number">1.2.2.</span> <span class="nav-text">封装方法1:提取需要改变部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装方法2-定义方法参数"><span class="nav-number">1.2.3.</span> <span class="nav-text">封装方法2:定义方法参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装方法3-优化参数"><span class="nav-number">1.2.4.</span> <span class="nav-text">封装方法3:优化参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装方法4-参数格式化"><span class="nav-number">1.2.5.</span> <span class="nav-text">封装方法4:参数格式化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装方法5-参数格式化"><span class="nav-number">1.2.6.</span> <span class="nav-text">封装方法5:参数格式化</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CuteChenChen</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Gemini
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
